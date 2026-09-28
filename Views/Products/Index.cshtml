@@ -1,0 +1,48 @@
+﻿@model List<CologneWorld.Models.Product>
+
+@{
+    ViewData["Title"] = "All Products - Cologne World";
+}
+
+<div class="container py-5">
+    <div class="row mb-5">
+        <div class="col text-center">
+            <h1 class="display-4 fw-bold mb-3 slide-up">Premium Cologne Collection</h1>
+            <p class="lead text-muted slide-up">Discover our complete range of luxury fragrances</p>
+        </div>
+    </div>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success fade-in mb-4">
+            <i class="fas fa-check-circle me-2"></i>@TempData["SuccessMessage"]
+        </div>
+    }
+
+    <div class="row">
+        @foreach (var product in Model)
+        {
+            <div class="col-xl-3 col-lg-4 col-md-6 mb-4">
+                <div class="product-card fade-in">
+                    <img src="@product.ImageUrl" alt="@product.Name" class="product-image"
+                         onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?w=500&h=500&fit=crop'">
+                    <div class="mb-3">
+                        <span class="badge bg-primary">@product.Category</span>
+                    </div>
+                    <h5 class="fw-bold mb-2">@product.Name</h5>
+                    <p class="text-muted small mb-3">@product.Description</p>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span class="price-tag">@product.UnitPrice.ToString("C")</span>
+                        <form method="post" action="/Cart/AddToCart">
+                            <input type="hidden" name="productId" value="@product.ProductId" />
+                            <input type="hidden" name="quantity" value="1" />
+                            <button type="submit" class="btn btn-primary-custom btn-sm">
+                                <i class="fas fa-cart-plus me-1"></i>Add to Cart
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>

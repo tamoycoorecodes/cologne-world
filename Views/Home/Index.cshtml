@@ -1,0 +1,159 @@
+﻿@model List<CologneWorld.Models.Product>
+
+@{
+    ViewData["Title"] = "Premium Cologne Collection";
+}
+
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="container">
+        <div class="hero-content animate-slide-up">
+            <h1 class="display-3 fw-bold mb-4">Discover Luxury Fragrances</h1>
+            <p class="lead mb-5">Experience the essence of elegance with our premium collection of designer colognes and fragrances. Each scent tells a story of sophistication.</p>
+            <div class="d-flex gap-3 justify-content-center flex-wrap">
+                <a asp-controller="Products" asp-action="Index" class="btn btn-primary btn-lg">
+                    <i class="fas fa-shopping-bag me-2"></i>Shop Collection
+                </a>
+                <a href="#features" class="btn btn-outline-light btn-lg">
+                    <i class="fas fa-star me-2"></i>Discover More
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Featured Products -->
+<section class="py-5">
+    <div class="container">
+        <div class="row mb-5">
+            <div class="col text-center">
+                <h2 class="display-4 fw-bold mb-3">Featured Collection</h2>
+                <p class="text-muted fs-5">Handpicked selection of our most exclusive fragrances</p>
+            </div>
+        </div>
+
+        <div class="row">
+            @foreach (var product in Model)
+            {
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <div class="product-card animate-fade-in">
+                        <img src="@product.ImageUrl" alt="@product.Name" class="product-image"
+                             onerror="this.src='https://images.unsplash.com/photo-1590736969955-1d0c72c72b97?w=400&h=400&fit=crop'">
+                        <div class="mb-3">
+                            <span class="badge bg-primary">@product.Category</span>
+                        </div>
+                        <h4 class="fw-bold mb-2">@product.Name</h4>
+                        <p class="text-muted mb-3">@product.Description</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="price-tag">@product.UnitPrice.ToString("C")</span>
+                            <form asp-controller="Cart" asp-action="AddToCart" method="post">
+                                <input type="hidden" name="productId" value="@product.ProductId" />
+                                <input type="hidden" name="quantity" value="1" />
+                                <button type="submit" class="btn btn-primary" onclick="addToCartAnimation(this)">
+                                    <i class="fas fa-cart-plus me-2"></i>Add to Cart
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section id="features" class="py-5 bg-light">
+    <div class="container">
+        <div class="row mb-5">
+            <div class="col text-center">
+                <h2 class="display-4 fw-bold mb-3">Why Choose Cologne World?</h2>
+                <p class="text-muted fs-5">Experience the difference with our premium services</p>
+            </div>
+        </div>
+        <div class="row text-center">
+            <div class="col-md-4 mb-4 feature-item">
+                <div class="animate-fade-in">
+                    <i class="fas fa-truck feature-icon"></i>
+                    <h4 class="fw-bold">Free Shipping</h4>
+                    <p class="text-muted">Free delivery on all orders over $50. Fast and reliable shipping worldwide.</p>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4 feature-item">
+                <div class="animate-fade-in">
+                    <i class="fas fa-shield-alt feature-icon"></i>
+                    <h4 class="fw-bold">Quality Guarantee</h4>
+                    <p class="text-muted">100% authentic premium fragrances with quality assurance and authenticity guarantee.</p>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4 feature-item">
+                <div class="animate-fade-in">
+                    <i class="fas fa-headset feature-icon"></i>
+                    <h4 class="fw-bold">Expert Support</h4>
+                    <p class="text-muted">Our fragrance experts are ready to help you find your perfect scent.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Newsletter Section -->
+<section class="py-5" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 mx-auto text-center">
+                <h3 class="display-5 fw-bold mb-3">Stay in the Scent Loop</h3>
+                <p class="mb-4">Subscribe to our newsletter for exclusive offers and new fragrance releases.</p>
+                <div class="row justify-content-center">
+                    <div class="col-md-8">
+                        <div class="input-group input-group-lg">
+                            <input type="email" class="form-control" placeholder="Enter your email" aria-label="Email">
+                            <button class="btn btn-light" type="button">
+                                <i class="fas fa-paper-plane me-2"></i>Subscribe
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <script>
+        // Display toast messages
+        $(document).ready(function() {
+            const successMessage = '@TempData["SuccessMessage"]';
+            const errorMessage = '@TempData["ErrorMessage"]';
+
+            if (successMessage) {
+                showToast('Success', successMessage, 'success');
+            }
+            if (errorMessage) {
+                showToast('Error', errorMessage, 'error');
+            }
+        });
+
+        function showToast(title, message, type) {
+            // Create toast element
+            const toast = $(`
+                <div class="toast align-items-center text-white bg-${type === 'success' ? 'success' : 'danger'} border-0 position-fixed top-0 end-0 m-3" role="alert">
+                    <div class="d-flex">
+                        <div class="toast-body">
+                            <strong>${title}:</strong> ${message}
+                        </div>
+                        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+                    </div>
+                </div>
+            `);
+
+            $('body').append(toast);
+            const bsToast = new bootstrap.Toast(toast[0]);
+            bsToast.show();
+
+            // Remove toast after hide
+            toast.on('hidden.bs.toast', function () {
+                $(this).remove();
+            });
+        }
+    </script>
+}
